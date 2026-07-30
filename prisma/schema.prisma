@@ -1,0 +1,94 @@
+// CareConnect Database Schema
+// Run: npx prisma migrate dev --name init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum Role {
+  PATIENT
+  DOCTOR
+  ADMIN
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CHECKED_IN
+  COMPLETED
+  CANCELLED
+}
+
+model Patient {
+  id            String        @id @default(cuid())
+  authUserId    String        @unique // links to Supabase auth.users.id
+  fullName      String
+  dob           DateTime
+  gender        Gender
+  contactNumber String
+  email         String        @unique
+  address       String?
+  createdAt     DateTime      @default(now())
+  appointments  Appointment[]
+
+  @@map("patients")
+}
+
+model Doctor {
+  id           String        @id @default(cuid())
+  authUserId   String        @unique
+  fullName     String
+  specialty    String
+  department   String?
+  phone        String
+  email        String        @unique
+  approved     Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  appointments Appointment[]
+
+  @@map("doctors")
+}
+
+model Appointment {
+  id             String            @id @default(cuid())
+  patientId      String
+  doctorId       String
+  dateTime       DateTime
+  status         AppointmentStatus @default(SCHEDULED)
+  reasonForVisit String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  patient Patient        @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctor  Doctor         @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  record  MedicalRecord?
+
+  @@index([doctorId, dateTime])
+  @@index([patientId])
+  // Prevents true double-booking: same doctor, same exact slot
+  @@unique([doctorId, dateTime])
+  @@map("appointments")
+}
+
+model MedicalRecord {
+  id            String   @id @default(cuid())
+  appointmentId String   @unique
+  diagnosis     String
+  treatmentPlan String?
+  prescription  String?
+  createdAt     DateTime @default(now())
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+
+  @@map("medical_records")
+}
