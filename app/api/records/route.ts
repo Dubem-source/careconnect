@@ -4,9 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
 // POST /api/records
-// FR-4: store clinical notes, diagnoses, and prescriptions for a completed appointment
-// Doctor-only — enforced by proxy.ts at the /staff route level for pages,
-// and re-checked here since API routes aren't covered by that matcher.
+// Save consultation notes, diagnoses, and prescriptions for completed appointments
+// Verify authorization for doctors and administrators
 export async function POST(req: Request) {
   const supabase = await createClient();
   const {

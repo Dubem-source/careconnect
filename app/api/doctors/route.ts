@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 // GET /api/doctors
-// FR-2: list doctors so patients can pick one to see availability for
+// List doctors to allow patient selection during scheduling
 export async function GET() {
   const doctors = await prisma.doctor.findMany({
     orderBy: { fullName: "asc" },

@@ -8,7 +8,7 @@ const CLINIC_CLOSE_HOUR = 17;
 const SLOT_MINUTES = 30;
 
 // GET /api/doctors/[id]/availability?date=2026-08-10
-// FR-2: display available consultation time slots based on active doctor schedules
+// Calculate and display available consultation slots for a specific doctor on a selected date
 export async function GET(req: Request, { params }: Params) {
   const { id: doctorId } = await params;
   const { searchParams } = new URL(req.url);

@@ -4,10 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
 // POST /api/patients
-// FR-1: register account + demographic details.
-// Called right after supabase.auth.signUp() on the client to create the
-// matching row in our own `patients` table (keeps clinical data in our DB,
-// auth/session handled by Supabase).
+// Register new patient profile and demographic details
+// Integrates with Supabase Auth to map details to local database
 export async function POST(req: Request) {
   const supabase = await createClient();
   const {

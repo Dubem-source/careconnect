@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
 // GET /api/appointments?doctorId=xxx&patientId=xxx
-// FR-2: display available slots / FR-3: view appointments
+// Retrieve appointments filtered optionally by doctorId or patientId
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const doctorId = searchParams.get("doctorId") ?? undefined;
@@ -21,9 +21,7 @@ export async function GET(req: Request) {
 }
 
 // POST /api/appointments
-// FR-3: schedule an appointment. Relies on the DB's @@unique([doctorId, dateTime])
-// constraint in schema.prisma as the real guard against double-booking —
-// the check below is just a fast, friendly pre-check.
+// Book a new appointment. Relies on the database unique constraint to prevent double-booking.
 export async function POST(req: Request) {
   const supabase = await createClient();
   const {

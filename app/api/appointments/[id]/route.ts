@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 type Params = { params: Promise<{ id: string }> };
 
 // PATCH /api/appointments/[id]
-// FR-3: reschedule / change status (check-in, complete, cancel)
+// Update appointment details (e.g. status, scheduling datetime)
 export async function PATCH(req: Request, { params }: Params) {
   const { id } = await params;
   const supabase = await createClient();
@@ -34,7 +34,7 @@ export async function PATCH(req: Request, { params }: Params) {
 }
 
 // DELETE /api/appointments/[id]
-// FR-3: cancel an appointment
+// Cancel an appointment booking by setting status to CANCELLED
 export async function DELETE(_req: Request, { params }: Params) {
   const { id } = await params;
 
